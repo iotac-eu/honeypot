@@ -1,0 +1,8 @@
+# get the docker image
+https://tubcloud.tu-berlin.de/s/GT66Mqi7yHYQG5Z/download?path=%2Fdocker_image&files=honeypot.tar
+
+# store a docker
+docker save --output honeypot.tar honeypot_deploy
+
+# load a docker
+docker load --input honeypot.tar
