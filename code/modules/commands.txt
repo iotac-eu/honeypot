@@ -1,0 +1,59 @@
+## start the image(s)
+docker exec -it honeypot_container /bin/sh
+
+## get network IPs
+docker inspect -f '{{.Name}} - {{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' $(docker ps -aq)
+
+/honeypot2 - 172.17.0.2
+/honeypot_attacker - 172.17.0.4
+/honeypot_container - 172.17.0.3
+
+
+## start the honeypot
+sudo su - cowrie
+cd cowrie/iotac_honeypot/modules
+bash start_honeypot.sh 
+
+## observe the log
+// tail -f var/log/cowrie/cowrie.log
+// tail -f honeypot.log 
+tail -f /home/cowrie/cowrie/var/log/cowrie/cowrie.json 
+tail -f /home/cowrie/cowrie/var/log/cowrie/cowrie.log
+
+## run Attackers envrionment
+docker exec -it honeypot_attacker /bin/sh
+## get honeypot IP
+docker inspect -f '{{.Name}} - {{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' $(docker ps -aq)
+
+## run portscan
+nmap -v 172.17.0.2 -p 1-5000
+
+## service login examples
+ssh root@172.17.0.2 -p 2222 
+telnet 172.17.0.2 2223
+ftp ...
+
+## DoS
+gcc synflood.c -a synflood
+synflood 172.17.0.2 2222
+
+## track activiy in the log
+ssh root@172.17.0.2 -p 2222 
+execute commands
+
+## trigger advanced detection
+docker exec -it honeypot_container1 /bin/sh
+sudo su - cowrie
+cd cowrie/iotac_honeypot/modules
+### setup IP of remote HP in config.json
+bash start_honeypot.sh 
+
+docker exec -it honeypot_container2 /bin/sh
+sudo su - cowrie
+cd cowrie/iotac_honeypot/modules
+### setup IP of remote HP in config.json
+bash start_honeypot.sh 
+
+### e.g. execute single port portscan across network
+nmap -v 172.17.0.0/24 -p 2222
+

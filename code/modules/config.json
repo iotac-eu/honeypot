@@ -1,0 +1,5 @@
+{
+	"logfilepath" : "/home/cowrie/cowrie/var/log/cowrie/cowrie.json",
+	"nodes" : "172.17.0.2:5000"
+
+}
