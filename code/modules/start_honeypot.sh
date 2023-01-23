@@ -1,24 +1,39 @@
 #!/bin/sh
 
 rm honeypot.log
-rm /home/cowrie/cowrie/var/log/cowrie/cowrie.json
-touch /home/cowrie/cowrie/var/log/cowrie/cowrie.json
+rm $HOME/cowrie/var/log/cowrie/cowrie.json
+touch $HOME/cowrie/var/log/cowrie/cowrie.json
 
+source $HOME/cowrie/honeypot-env/bin/activate
+
+printf "[IoTAC HP] initiate honeypot core ..."
 $HOME/cowrie/bin/cowrie start
+printf "\\n"
 
 sleep 1
+printf "[IoTAC HP] initiate DoS detection ..."
 nohup sudo python3 -u dos.py >> honeypot.log &
+printf "\\n"
 
 sleep 1
-sudo python3 portscans.py -d >> honeypot.log &
+printf "[IoTAC HP] initiate portscan detection ..."
+sudo python3 -u portscans.py -d >> honeypot.log &
+printf "\\n"
 
 sleep 1
-python3 advanced_detection.py -d >> honeypot.log &
+printf "[IoTAC HP] initiate advanced detection with network peers..."
+python3 -u advanced_detection.py -d >> honeypot.log &
+printf "\\n"
 
 sleep 1
-nohup python3 publishAPI.py >> honeypot.log &
+printf "[IoTAC HP] publish API to network peers"
+nohup python3 -u publishAPI.py >> honeypot.log &
+printf "\\n"
 
-# tail -f /home/cowrie/cowrie/var/log/cowrie/cowrie.json 
+read  -n 1 -p "Press enter to tail honeypot log or ctrl+c to quit"
+clear
+
+echo "[IoTAC HP] trail logfile for debugging"
+tail -f $HOME/cowrie/var/log/cowrie/cowrie.json
 # tail has some issues to follow the file since its async written
-
 

@@ -10,35 +10,33 @@ docker inspect -f '{{.Name}} - {{range .NetworkSettings.Networks}}{{.IPAddress}}
 
 
 ## start the honeypot
-sudo su - cowrie
-cd cowrie/iotac_honeypot/modules
+su honeypot
+cd code/modules/
 bash start_honeypot.sh 
 
 ## observe the log
-// tail -f var/log/cowrie/cowrie.log
-// tail -f honeypot.log 
 tail -f /home/cowrie/cowrie/var/log/cowrie/cowrie.json 
 tail -f /home/cowrie/cowrie/var/log/cowrie/cowrie.log
 
-## run Attackers envrionment
+## attacking the honeypot from another docker or machine
 docker exec -it honeypot_attacker /bin/sh
 ## get honeypot IP
-docker inspect -f '{{.Name}} - {{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' $(docker ps -aq)
+sudo docker inspect -f '{{.Name}} - {{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' $(sudo docker ps -aq)
 
-## run portscan
+## run a portscan
 nmap -v 172.17.0.2 -p 1-5000
 
 ## service login examples
-ssh root@172.17.0.2 -p 2222 
+ssh root@172.17.0.2 -p 22 
 telnet 172.17.0.2 2223
 ftp ...
 
 ## DoS
 gcc synflood.c -a synflood
-synflood 172.17.0.2 2222
+synflood 172.17.0.2 22
 
 ## track activiy in the log
-ssh root@172.17.0.2 -p 2222 
+ssh root@172.17.0.2 -p 22 
 execute commands
 
 ## trigger advanced detection
@@ -55,5 +53,5 @@ cd cowrie/iotac_honeypot/modules
 bash start_honeypot.sh 
 
 ### e.g. execute single port portscan across network
-nmap -v 172.17.0.0/24 -p 2222
+nmap -v 172.17.0.0/24 -p 22
 
