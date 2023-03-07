@@ -12,10 +12,11 @@ def get_remote_log( ip ):
 	remote_api = "https://"+ip+"/getall"
 	print ("[advanced_detection] fetch log data from ",remote_api)
 	try:
-		r = requests.get(remote_api, verify=False)
+		reqheader = { "apikey" : "iotacAPIkey1-s56JkyKbk4WrSBaXt9M99PC9XpGtUKZu9T" }
+		r = requests.get(remote_api, verify=False, headers=reqheader)
 		remote_data = r.text.strip().split("\n")
 	except Exception as e:
-		print ("[advanced_detection] can not access remote log at "+remote_api)
+		print ("[advanced_detection] can not access remote log "+remote_api)
 		return {}
 
 	if(len(remote_data) <= 2):
@@ -56,8 +57,10 @@ def create_shared_threat(local, remote, localIP, remoteIP):
 	# print ("")
 	return threat_info
 
-
-
+import socket   
+hostname=socket.gethostname()   
+localIP=socket.gethostbyname(hostname)   
+print (localIP)
 
 # look for common threats between this and remote honeypots
 def advanced_detection(threat_history, offset):
@@ -74,6 +77,10 @@ def advanced_detection(threat_history, offset):
 
 
 	for ip in list_of_nodes:				# list of honeypots
+		# remoteIP = ip.split(":")[0]
+		# if(localIP == remoteIP):			# skip localhost
+			# continue;
+
 		remote_log = get_remote_log(ip)
 		if(len(remote_log) == 0):
 			break;
@@ -155,12 +162,13 @@ if __name__ == '__main__':
 
 	config = open("config.json").read()
 	config = json.loads(config)
-	list_of_nodes = config['nodes'].split(",")
+	list_of_nodes = config['nodes']
+
 	logfilepath = config['logfilepath']
 
 	threat_history = []
 
-	print ("[advanced_detection] initiated, share threat info with: "+str(list_of_nodes))
+	print ("[advanced_detection] initiated, share threat across: "+str(list_of_nodes))
 
 	offset = 0
 	time.sleep(10)

@@ -174,7 +174,11 @@ class GracefulKiller:
 
 
 # {'eventid': 'cowrie.dos', 'type': 'TCP-SYN', 'timestamp': '1638547058.519988', 'protocol': 'TCP', 'src_ip': 'random', 'dst_ip': '172.17.0.2', 'src_mac': '02:42:ac:11:00:03', 'dst_mac': '02:42:ac:11:00:02', 'src_port': 'random', 'dst_port': 80}
-logfilepath = "/home/cowrie/cowrie/var/log/cowrie/cowrie.json"
+config = open("config.json").read()
+config = json.loads(config)
+logfilepath = config['logfilepath']
+
+
 # file append is atomic in usenix up to 4KB
 def logevent(json_to_log):
 	print ("[dos_detection]", json_to_log['type'], " detected -> log")

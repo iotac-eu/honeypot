@@ -1,5 +1,7 @@
 {
-	"logfilepath" : "/home/cowrie/cowrie/var/log/cowrie/cowrie.json",
-	"nodes" : "172.17.0.2:5000"
+	"logfilepath" : "/home/honeypot/cowrie/var/log/cowrie/cowrie.json",
+	"nodes" : ["172.17.0.2:5000", "172.17.0.3:5000"],
+	"apikey" : ["iotacAPIkey1-s56JkyKbk4WrSBaXt9M99PC9XpGtUKZu9T"],
+	"iotacappserver" : ["172.17.0.33"]
 
 }

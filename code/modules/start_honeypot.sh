@@ -30,10 +30,11 @@ printf "[IoTAC HP] publish API to network peers"
 nohup python3 -u publishAPI.py >> honeypot.log &
 printf "\\n"
 
-read  -n 1 -p "Press enter to tail honeypot log or ctrl+c to quit"
-clear
+#read  -n 1 -p "Press enter to tail honeypot log or ctrl+c to quit"
+#clear
 
-echo "[IoTAC HP] trail logfile for debugging"
-tail -f $HOME/cowrie/var/log/cowrie/cowrie.json
+reset
+echo "[IoTAC HP] Honeypot initiated."
+echo "tail -f $HOME/cowrie/var/log/cowrie/cowrie.json"
 # tail has some issues to follow the file since its async written
 

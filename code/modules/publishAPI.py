@@ -4,11 +4,14 @@ from datetime import datetime
 from file_read_backwards import FileReadBackwards
 import json
 
+
 app = Flask(__name__)
 
-
-infile = r"/home/cowrie/cowrie/var/log/cowrie/cowrie.json"
-
+config = open("config.json").read()
+config = json.loads(config)
+list_of_nodes = config['nodes']
+infile = config['logfilepath']
+apikey = config['apikey'][0]
 
 def process_response(logdata_lines):
    response = []
@@ -25,19 +28,26 @@ def process_response(logdata_lines):
    return ((''.join(response))+"\n")
 
 
-# curl -k https://172.17.0.2:5000/getall
+# curl -k https://172.17.0.2:5000/getall --header "apikey: iotacAPIkey1-s56JkyKbk4WrSBaXt9M99PC9XpGtUKZu9T"
 @app.route('/getall')
 def get_full_log():
+   keyrequested = request.headers.get('apikey')
+   if(keyrequested != apikey):
+      return "invalid api key\n"
    try:
       logdata = open(infile, "r").readlines()
       return process_response(logdata)
    except Exception as e:
-      return "error loading log data\n"+str(e)
+      return "error loading log data\n"#+str(e)
 
 
-# curl -k https://172.17.0.2:5000/getlatest?lastdate=2021-11-17T14:40:34
+# curl -k https://172.17.0.2:5000/getlatest?lastdate=2021-11-17T14:40:34 --header "apikey: iotacAPIkey1-s56JkyKbk4WrSBaXt9M99PC9XpGtUKZu9T"
 @app.route('/getlatest', methods=['GET', 'POST'])
 def log():
+   keyrequested = request.headers.get('apikey')
+   if(keyrequested != apikey):
+      return "invalid api key\n"
+
    maxtime = request.args.get('lastdate')
    print (maxtime)
    if not (maxtime):
@@ -71,17 +81,10 @@ def log():
    return "error" # should never happen
 
 
-# ideas
-# curl -k https://172.17.0.2:5000/getthreats?malware
-# curl -k https://172.17.0.2:5000/getthreats?dos
-# curl -k https://172.17.0.2:5000/getthreats?login
-# curl -k https://172.17.0.2:5000/getthreats?portscan
-# curl -k https://172.17.0.2:5000/getthreats?shared
-
 
 if __name__ == '__main__':
    app.run(host="0.0.0.0", port=5000, ssl_context='adhoc')
-   print ("[api] published")
+
 
 
 

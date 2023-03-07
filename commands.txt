@@ -11,12 +11,11 @@ docker inspect -f '{{.Name}} - {{range .NetworkSettings.Networks}}{{.IPAddress}}
 
 ## start the honeypot
 su honeypot
-cd code/modules/
+cd $HOME/code/modules/
 bash start_honeypot.sh 
 
 ## observe the log
-tail -f /home/cowrie/cowrie/var/log/cowrie/cowrie.json 
-tail -f /home/cowrie/cowrie/var/log/cowrie/cowrie.log
+tail -f /home/honeypot/cowrie/var/log/cowrie/cowrie.log
 
 ## attacking the honeypot from another docker or machine
 docker exec -it honeypot_attacker /bin/sh
@@ -32,8 +31,8 @@ telnet 172.17.0.2 2223
 ftp ...
 
 ## DoS
-gcc synflood.c -a synflood
-synflood 172.17.0.2 22
+gcc synflood.c -o synflood
+sudo ./synflood 172.17.0.2 22
 
 ## track activiy in the log
 ssh root@172.17.0.2 -p 22 
@@ -54,4 +53,16 @@ bash start_honeypot.sh
 
 ### e.g. execute single port portscan across network
 nmap -v 172.17.0.0/24 -p 22
+
+## read the API
+curl -k https://172.17.0.2:5000/getall --header "apikey: iotacAPIkey1-s56JkyKbk4WrSBaXt9M99PC9XpGtUKZu9T"
+
+% CRED honeypot user
+thisisasecurepasswordforthehoneypotwithmanyletters
+
+
+
+
+
+
 
