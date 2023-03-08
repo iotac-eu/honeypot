@@ -1,5 +1,5 @@
 # get the docker image
-wget -O honeypot.tar.zip https://tubcloud.tu-berlin.de/s/nWpkyFranBAACCa/download/honeypot.tar.zip
+wget -O honeypot.tar.zip https://tubcloud.tu-berlin.de/s/ipFLSPeT72RotGg/download/honeypot.tar.zip
 
 # unzip the image
 unzip honeypot.tar.zip
