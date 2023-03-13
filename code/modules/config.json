@@ -2,6 +2,13 @@
 	"logfilepath" : "/home/honeypot/cowrie/var/log/cowrie/cowrie.json",
 	"nodes" : ["172.17.0.2:5000", "172.17.0.3:5000"],
 	"apikey" : ["iotacAPIkey1-s56JkyKbk4WrSBaXt9M99PC9XpGtUKZu9T"],
-	"iotacappserver" : ["172.17.0.33"]
+	"iotacappserver_kafka" : ["http://116.203.5.132:9092/"], 
+	"metadata" : {
+		"dataSourceID": "IoTAC_HP-SMARTHOME-11",
+  		"systemID": "CERTH_Smart_Home-1_IoT-System",
+  		"location": { 	"geoLocation": { "latitude": 38.037424, "longitude": 23.802611}, 
+  						"virtualLocation": "CERTH_Smart_Home-1"},
+  		"monitoredAssetID": ["SmartHomeHoneypot-11"]
+  	}
 
 }

@@ -1,15 +1,10 @@
-## start the image(s)
-docker exec -it honeypot_container /bin/sh
+# manage the docker
+sudo docker pull jlnftk/honeypot:latest
+sudo docker run --name iotac_honeypot -d -t jlnftk/honeypot:latest 
+sudo docker ps
+sudo docker exec -it iotac_honeypot /bin/bash
 
-## get network IPs
-docker inspect -f '{{.Name}} - {{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' $(docker ps -aq)
-
-/honeypot2 - 172.17.0.2
-/honeypot_attacker - 172.17.0.4
-/honeypot_container - 172.17.0.3
-
-
-## start the honeypot
+## running the honeypot
 su honeypot
 cd $HOME/code/modules/
 bash start_honeypot.sh 
@@ -17,7 +12,8 @@ bash start_honeypot.sh
 ## observe the log
 tail -f /home/honeypot/cowrie/var/log/cowrie/cowrie.log
 
-## attacking the honeypot from another docker or machine
+
+## testing the honeypot from the outside
 docker exec -it honeypot_attacker /bin/sh
 ## get honeypot IP
 sudo docker inspect -f '{{.Name}} - {{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' $(sudo docker ps -aq)

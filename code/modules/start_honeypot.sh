@@ -30,6 +30,11 @@ printf "[IoTAC HP] publish API to network peers"
 nohup python3 -u publishAPI.py >> honeypot.log &
 printf "\\n"
 
+sleep 1
+printf "[IoTAC HP] start kafka connection"
+nohup python3 -u pushAPI.py >> honeypot.log &
+printf "\\n"
+
 #read  -n 1 -p "Press enter to tail honeypot log or ctrl+c to quit"
 #clear
 
