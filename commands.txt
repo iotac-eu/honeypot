@@ -4,9 +4,10 @@ sudo docker run --name iotac_honeypot -d -t jlnftk/honeypot:latest
 sudo docker ps
 sudo docker exec -it iotac_honeypot /bin/bash
 
-## running the honeypot
+# running the honeypot
 su honeypot
 cd $HOME/code/modules/
+## now setup config.json, especially the metadata part
 bash start_honeypot.sh 
 
 ## observe the log
@@ -53,7 +54,7 @@ nmap -v 172.17.0.0/24 -p 22
 ## read the API
 curl -k https://172.17.0.2:5000/getall --header "apikey: iotacAPIkey1-s56JkyKbk4WrSBaXt9M99PC9XpGtUKZu9T"
 
-% CRED honeypot user
+% default CRED honeypot user
 thisisasecurepasswordforthehoneypotwithmanyletters
 
 
