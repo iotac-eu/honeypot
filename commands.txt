@@ -35,21 +35,22 @@ sudo ./synflood 172.17.0.2 22
 ssh root@172.17.0.2 -p 22 
 execute commands
 
-## trigger advanced detection
+## trigger advanced detection (this will hit the entire network and will be detected by all honeypots as a shared threat)
 docker exec -it honeypot_container1 /bin/sh
-sudo su - cowrie
-cd cowrie/iotac_honeypot/modules
+su honeypot
+cd $HOME/code/modules/
 ### setup IP of remote HP in config.json
 bash start_honeypot.sh 
 
 docker exec -it honeypot_container2 /bin/sh
-sudo su - cowrie
-cd cowrie/iotac_honeypot/modules
+su honeypot
+cd $HOME/code/modules/
 ### setup IP of remote HP in config.json
 bash start_honeypot.sh 
 
-### e.g. execute single port portscan across network
+### e.g. execute single port portscan across the network
 nmap -v 172.17.0.0/24 -p 22
+
 
 ## read the API
 curl -k https://172.17.0.2:5000/getall --header "apikey: iotacAPIkey1-s56JkyKbk4WrSBaXt9M99PC9XpGtUKZu9T"
