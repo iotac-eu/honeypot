@@ -1,8 +1,0 @@
-[dos_detection] initiated
-[portscan] initiated
-Traceback (most recent call last):
-  File "publishAPI.py", line 1, in <module>
-    from flask import Flask
-ModuleNotFoundError: No module named 'flask'
-
-[dos_detection] shutdown
