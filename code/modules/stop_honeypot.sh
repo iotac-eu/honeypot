@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 echo "[IoTAC HP] stopping honeypot"
 sudo $HOME/cowrie/bin/cowrie stop
 echo "[IoTAC HP] stopping detection modules and API"

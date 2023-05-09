@@ -7,6 +7,7 @@ sudo docker exec -it iotac_honeypot /bin/bash
 # running the honeypot
 su honeypot
 cd $HOME/code/modules/
+
 ## now setup config.json, especially the metadata part
 bash start_honeypot.sh 
 
