@@ -50,7 +50,7 @@ pipeline {
           steps{
             withSonarQubeEnv(installationName: 'SonarIOTAC'){
               echo 'Starting Static Application Security Testing analysis using SonarQube'
-              sh '${scannerHome}/bin/sonar-scanner -Dsonar.projectKey=attack-detection -Dsonar.sources=. '
+              sh '${scannerHome}/bin/sonar-scanner -Dsonar.projectKey=honeypot -Dsonar.sources=. '
             }
           } 
         } 
