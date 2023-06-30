@@ -5,47 +5,72 @@ import datetime;
 import random
 import time
 
+from confluent_kafka import Producer
+import socket
+from datetime import datetime
+import json
+import uuid
+import random
 
 config = open("config.json").read()
 config = json.loads(config)
-appserverurl = config['iotacappserver_kafka'][0]
+appserverurl = config['iotacappserver_kafka']
 metadata = config['metadata']
 
 
-print("[PushAPI.py] Testing kafka connections via "+appserverurl)
+conf = {"bootstrap.servers": appserverurl, "client.id": socket.gethostname()}
+producer = Producer(conf)
+topic = "IOTAC.HP.RMS"
+
+# get public ip for report
+try:
+	publicip = str(requests.get('https://checkip.amazonaws.com').text.strip())
+except Exception as e:
+	print ("can not resolve public IP, use 127.0.0.1 for report")
+	publicip = "127.0.0.1"
+
+HONEYPOT_UUID = "HONEYPOT-"+str(random.randint(10000,99999))
+
+print("[PushAPI.py] Testing kafka connection via "+appserverurl)
+
 # try to contact kafka, breaks if reachable
-while True:
+while 1:
 	try:
-		ct = datetime.datetime.now().isoformat()
+		ct = datetime.now() # .isoformat()	
+		stamp = str(ct.strftime("%m/%d/%Y, %H:%M:%S") )
+
 		testmsg = {
-			"dataSourceID": metadata["dataSourceID"],		# 'IoTAC_HP-SMARTHOME11'
-			"systemID": metadata["systemID"], 			# "CERTH_Smart_Home-1_IoT-System"
+			"dataSourceID": HONEYPOT_UUID,		# 'IoTAC_HP-SMARTHOME11'
+			"systemID": HONEYPOT_UUID, 					# "CERTH_Smart_Home-1_IoT-System"
 			"reportType": "IoTAC-Threat-Report",
-			"_timestamp": str(ct),
+			"_timestamp": stamp,
 			"location": metadata["location"],
 			"value": {
-				"type": "AttackDetection",
-				"monitoredAssetID": metadata["monitoredAssetID"],
-				"monitoredAssetIP": ["127.0.0.1"],
-				"measurement": [{"name": "Status", "value": "Honeypot initiated."}],
-			"requestSource": "127.0.0.1",
-			"_timestamp": "2020-01-01T00:00:00.000Z"
-		  }
+					"type": "Honeypot",
+					"monitoredAssetID": HONEYPOT_UUID,
+					"monitoredAssetIP": [publicip],
+					"measurement": [{"name": "Status", "value": "Honeypot initiated."}],
+					"requestSource": publicip,
+					"_timestamp": stamp
+			}
 		}
 
 		# test if kafka is avilible
-		r = requests.post(appserverurl, str(testmsg), timeout=30)
-		print("[PushAPI.py] "+r.status_code)
+		json_send = json.dumps(testmsg).encode()
+		producer.produce("IOTAC.HP.RMS", key=str(uuid.uuid4()), value=json_send)
+		producer.flush()
 		break;
+	
 	except Exception as e:
-		# print (e)
+		print (e)
 		print ("[PushAPI.py] kafka not reachable via "+appserverurl)
 		print ("[PushAPI.py] try again in 10 min ... ")
+		time.sleep(600) 
 
-	time.sleep(600) 
+# exit()
 
 print ("[PushAPI.py] Kafka reachable via "+appserverurl)
-print ("[PushAPI.py] Send honeypot theat infos to "+appserverurl)
+print ("[PushAPI.py] Share honeypot theat infos to "+appserverurl)
 print (" ")
 
 def follow(thefile):
@@ -61,43 +86,41 @@ def follow(thefile):
 
 
 header = {
-  "dataSourceID": metadata["dataSourceID"],		# 'IoTAC_HP-SMARTHOME11'
-  "systemID": metadata["systemID"], 			# "CERTH_Smart_Home-1_IoT-System"
-  "reportType": "IoTAC-Threat-Report",
-  "_timestamp": "2020-01-01T00:00:00.000Z",
-  "location": metadata["location"],
-  "value": {
-	"type": "AttackDetection",
-	"monitoredAssetID": metadata["monitoredAssetID"],
-	"monitoredAssetIP": ["127.0.0.1"],
-	"measurement": [
-		# {"name": "Login", "value": "login attempt [root/mysmartpassword] succeeded"},
-		# {"name": "sessionID", "value": "e2cf44beaa85"}
-	],
-	"requestSource": "127.0.0.1",
-	"_timestamp": "2020-01-01T00:00:00.000Z"
-  }
+	"dataSourceID": HONEYPOT_UUID,		# 'IoTAC_HP-SMARTHOME11'
+	"systemID": HONEYPOT_UUID, 			# "CERTH_Smart_Home-1_IoT-System"
+	"reportType": "IoTAC-Threat-Report",
+	"_timestamp": stamp,
+	"location": metadata["location"],
+	"value": {
+			"type": "Honeypot",
+			"monitoredAssetID": HONEYPOT_UUID,
+			"monitoredAssetIP": publicip,
+			"measurement": [
+				# {"name": "Login", "value": "login attempt [root/mysmartpassword] succeeded"},
+				# {"name": "sessionID", "value": "e2cf44beaa85"}
+			],
+			"requestSource": publicip,
+			"_timestamp": stamp
+	}
 }
 
 
-# header["value"]["test"] = "123"
-# print (header["value"])
-# exit()
-
 sessionIPdict = {}
-
 
 if __name__ == '__main__':
 	logfile = open("examplelog/honeypot2.json","r")
+	# logfile = open(config['logfilepath'],"r")
 	loglines = follow(logfile)
+
 	for line in loglines:
 		lineobj = json.loads(line)
 
 		# prepare log entry message
 		logmsg = copy.copy(header)
 		# update message timestamp
-		ct = datetime.datetime.now().isoformat()
-		logmsg["_timestamp"] = str(ct)
+		ct = datetime.now() # .isoformat()	
+		stamp = str(ct.strftime("%m/%d/%Y, %H:%M:%S") )
+		logmsg["_timestamp"] = stamp
 
 		sendevent = False
 
@@ -141,14 +164,19 @@ if __name__ == '__main__':
 
 			print (logmsg)
 
-			# finally send logmsg
+			# send logmsg
 			try:
-				print ("send ...")
-				# r = requests.post('http://httpbin.org/post', line)
-				r = requests.post(appserverurl, line, timeout=30)
-				print("[PushAPI.py]: HTTP Response "+str(r.status_code))
-				# print (" ")
+				print ("send log line to kafka")
+				# print (logmsg)
+				# test if kafka is avilible
+				json_send = json.dumps(logmsg).encode()
+				producer.produce("IOTAC.HP.RMS", key=str(uuid.uuid4()), value=json_send)
+				producer.flush()
+				# break;
+				# r = requests.post(appserverurl, line, timeout=30)
+				# print("[PushAPI.py]: HTTP Response "+str(r.status_code))
 		
+
 			except Exception as e:
 				print ("[PushAPI.py]: Kafka communication error ...")
 				print (e)
