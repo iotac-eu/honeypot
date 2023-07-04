@@ -6,23 +6,24 @@ Honeypot component by Technische Universität Berlin.
 
 # install and manage the docker
 sudo docker pull jlnftk/honeypot:latest \
-sudo docker run -p 2000-3000:22 --name iotac_honeypot_XX -d -t jlnftk/honeypot:latest \
+sudo docker run -p 2000-3000:22 --name iotac_honeypot -d -t jlnftk/honeypot:latest \
 sudo docker ps \
-sudo docker exec -it iotac_honeypot_XX /bin/bash 
+sudo docker exec -it iotac_honeypot /bin/bash 
 
 # running the honeypot
 su honeypot
 cd $HOME/honeypot/code/modules/
-
-## now setup config.json, especially the metadata part
 bash start_honeypot.sh 
 
 ## observe the log
 tail -f /home/honeypot/cowrie/var/log/cowrie/cowrie.log
 
 
+
+
 ## testing the honeypot from the outside
 docker exec -it honeypot_attacker /bin/sh
+
 ## get honeypot IP
 sudo docker inspect -f '{{.Name}} - {{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' $(sudo docker ps -aq)
 
@@ -46,6 +47,7 @@ execute commands
 docker exec -it honeypot_container1 /bin/sh
 su honeypot
 cd $HOME/honeypot/code/modules/
+
 ### setup IP of remote HP in config.json
 bash start_honeypot.sh 
 
@@ -62,16 +64,11 @@ nmap -v 172.17.0.0/24 -p 22
 ## read the API
 curl -k https://172.17.0.2:5000/getall --header "apikey: iotacAPIkey1-s56JkyKbk4WrSBaXt9M99PC9XpGtUKZu9T"
 
-% default CRED honeypot user
-thisisasecurepasswordforthehoneypotwithmanyletters
-
-
 ## update the honeypot
 su honeypot \
 cd $HOME/honeypot/ \
 git pull
 
-
-
-
+## CREDs for honeypot user
+thisisasecurepasswordforthehoneypotwithmanyletters
 
