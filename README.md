@@ -11,8 +11,8 @@ sudo docker ps \
 sudo docker exec -it iotac_honeypot /bin/bash 
 
 # running the honeypot
-su honeypot
-cd $HOME/honeypot/code/modules/
+su honeypot \
+cd $HOME/honeypot/code/modules/ \
 bash start_honeypot.sh 
 
 ## observe the log
