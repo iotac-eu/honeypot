@@ -1,6 +1,9 @@
 # IoTAC Honeypot
 Honeypot component by Technische Universität Berlin.
 
+# Version
+3.0.1
+
 # install and manage the docker
 sudo docker pull jlnftk/honeypot:latest
 sudo docker run --name iotac_honeypot -d -t jlnftk/honeypot:latest 
