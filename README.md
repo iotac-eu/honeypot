@@ -9,7 +9,11 @@ sudo docker exec -it iotac_honeypot /bin/bash
 
 # running the honeypot
 su honeypot
-cd $HOME/code/modules/
+cd $HOME/honeypot/code/modules/
+
+## Provide a unique SystemID
+
+config.json
 
 ## now setup config.json, especially the metadata part
 bash start_honeypot.sh 
@@ -42,13 +46,13 @@ execute commands
 ## trigger advanced detection (this will hit the entire network and will be detected by all honeypots as a shared threat)
 docker exec -it honeypot_container1 /bin/sh
 su honeypot
-cd $HOME/code/modules/
+cd $HOME/honeypot/code/modules/
 ### setup IP of remote HP in config.json
 bash start_honeypot.sh 
 
 docker exec -it honeypot_container2 /bin/sh
 su honeypot
-cd $HOME/code/modules/
+cd $HOME/honeypot/code/modules/
 ### setup IP of remote HP in config.json
 bash start_honeypot.sh 
 
@@ -62,6 +66,11 @@ curl -k https://172.17.0.2:5000/getall --header "apikey: iotacAPIkey1-s56JkyKbk4
 % default CRED honeypot user
 thisisasecurepasswordforthehoneypotwithmanyletters
 
+
+## update the honeypot
+su honeypot
+cd $HOME/honeypot/
+git pull
 
 
 
