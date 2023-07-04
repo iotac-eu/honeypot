@@ -6,17 +6,13 @@ Honeypot component by Technische Universität Berlin.
 
 # install and manage the docker
 sudo docker pull jlnftk/honeypot:latest
-sudo docker run --name iotac_honeypot -d -t jlnftk/honeypot:latest 
+sudo docker run -p 2000-3000:22 --name iotac_honeypot_XX -d -t jlnftk/honeypot:latest
 sudo docker ps
-sudo docker exec -it iotac_honeypot /bin/bash
+sudo docker exec -it iotac_honeypot_XX /bin/bash
 
 # running the honeypot
 su honeypot
 cd $HOME/honeypot/code/modules/
-
-## Provide a unique SystemID
-
-config.json
 
 ## now setup config.json, especially the metadata part
 bash start_honeypot.sh 
@@ -34,7 +30,7 @@ sudo docker inspect -f '{{.Name}} - {{range .NetworkSettings.Networks}}{{.IPAddr
 nmap -v 172.17.0.2 -p 1-5000
 
 ## service login examples
-ssh root@172.17.0.2 -p 22 
+ssh root@172.17.0.3 -p 22 
 telnet 172.17.0.2 2223
 ftp ...
 
