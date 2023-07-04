@@ -6,8 +6,11 @@ Honeypot component by Technische Universität Berlin.
 
 # install and manage the docker
 sudo docker pull jlnftk/honeypot:latest
+
 sudo docker run -p 2000-3000:22 --name iotac_honeypot_XX -d -t jlnftk/honeypot:latest
+
 sudo docker ps
+
 sudo docker exec -it iotac_honeypot_XX /bin/bash
 
 # running the honeypot
