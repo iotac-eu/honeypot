@@ -114,8 +114,8 @@ if __name__ == '__main__':
 	loglines = follow(logfile)
 
 	for line in loglines:
-		# print ("new log -> kafka")
-		# print (line)
+		print ("new log -> kafka")
+		print (line)
 		lineobj = json.loads(line)
 
 		# prepare log entry message
@@ -159,6 +159,8 @@ if __name__ == '__main__':
 			logmsg["value"]["requestSource"] = lineobj["dst_ip"]	# attacker IP
 			logmsg["value"]["_timestamp"] = lineobj["timestamp"] 	# timestamp of event
 
+
+
 		if(sendevent):
 			# copy all other info over
 			logmsg["value"]["measurement"] = []
@@ -188,6 +190,8 @@ if __name__ == '__main__':
 			except Exception as e:
 				print ("[PushAPI.py]: Kafka communication error ...")
 				print (e)
+		else:
+			print ("line not send ...")
 
 
 
