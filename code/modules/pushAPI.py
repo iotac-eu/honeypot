@@ -140,25 +140,24 @@ if __name__ == '__main__':
 		logmsg["value"]["requestSource"] = lineobj["dst_ip"]	# attacker IP
 		logmsg["value"]["_timestamp"] = lineobj["timestamp"] 	# timestamp of event
 
-		if("iotac.honeypot.login." in lineobj["eventid"]):
+		if(".login." in lineobj["eventid"]):
 			sendevent = True
 			print ("[PushAPI.py] found login ... send:")
 
-		if("iotac.honeypot.dos" in lineobj["eventid"]):
+		if(".dos" in lineobj["eventid"]):
 			sendevent = True
 			print ("[PushAPI.py] found DoS ... send:")
 
-		if("iotac.honeypot.command." in lineobj["eventid"]):
+		if(".command." in lineobj["eventid"]):
 			sendevent = True
 			print ("[PushAPI.py] found malicious cmd ... send:")
 
-		if("iotac.honeypot.session.connect" in lineobj["eventid"]):
+		if(".session.connect" in lineobj["eventid"]):
 			sendevent = True
 			print ("[PushAPI.py] found ssh, ftp, ... send:")
 			logmsg["value"]["monitoredAssetIP"] = lineobj["src_ip"] # honeypot IP
 			logmsg["value"]["requestSource"] = lineobj["dst_ip"]	# attacker IP
 			logmsg["value"]["_timestamp"] = lineobj["timestamp"] 	# timestamp of event
-
 
 
 		if(sendevent):
