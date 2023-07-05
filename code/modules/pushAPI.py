@@ -16,6 +16,7 @@ config = open("config.json").read()
 config = json.loads(config)
 appserverurl = config['iotacappserver_kafka']
 metadata = config['metadata']
+honeypotlog = config['logfilepath']
 
 
 conf = {"bootstrap.servers": appserverurl, "client.id": socket.gethostname()}
@@ -108,8 +109,8 @@ header = {
 sessionIPdict = {}
 
 if __name__ == '__main__':
-	logfile = open("examplelog/honeypot2.json","r")
-	# logfile = open(config['logfilepath'],"r")
+	# logfile = open("examplelog/honeypot2.json","r")
+	logfile = open(honeypotlog,"r")
 	loglines = follow(logfile)
 
 	for line in loglines:
