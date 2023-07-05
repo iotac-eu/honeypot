@@ -114,7 +114,8 @@ if __name__ == '__main__':
 	loglines = follow(logfile)
 
 	for line in loglines:
-		print (line)
+		# print ("new log -> kafka")
+		# print (line)
 		lineobj = json.loads(line)
 
 		# prepare log entry message
@@ -143,9 +144,13 @@ if __name__ == '__main__':
 			sendevent = True
 			print ("[PushAPI.py] found login ... send:")
 
+		if("iotac.honeypot.dos" in lineobj["eventid"]):
+			sendevent = True
+			print ("[PushAPI.py] found DoS ... send:")
+
 		if("iotac.honeypot.command." in lineobj["eventid"]):
 			sendevent = True
-			print ("[PushAPI.py] found cmd ... send:")
+			print ("[PushAPI.py] found malicious cmd ... send:")
 
 		if("iotac.honeypot.session.connect" in lineobj["eventid"]):
 			sendevent = True
@@ -179,7 +184,6 @@ if __name__ == '__main__':
 				# break;
 				# r = requests.post(appserverurl, line, timeout=30)
 				# print("[PushAPI.py]: HTTP Response "+str(r.status_code))
-		
 
 			except Exception as e:
 				print ("[PushAPI.py]: Kafka communication error ...")
