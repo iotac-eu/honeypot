@@ -129,8 +129,10 @@ if __name__ == '__main__':
 		if("dst_ip" not in lineobj):
 			lineobj["dst_ip"] = sessionIPdict[lineobj["session"]]
 		else:
-			sessionIPdict[lineobj["session"]] = lineobj["dst_ip"]
-
+			try:
+				sessionIPdict[lineobj["session"]] = lineobj["dst_ip"]
+			except Exception as e:
+				lineobj["dst_ip"] = "0.0.0.0"
 
 		logmsg["value"]["monitoredAssetIP"] = lineobj["src_ip"] # honeypot IP
 		logmsg["value"]["requestSource"] = lineobj["dst_ip"]	# attacker IP
