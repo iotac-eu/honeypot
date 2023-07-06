@@ -6,6 +6,10 @@ touch $HOME/cowrie/var/log/cowrie/cowrie.json
 
 source $HOME/cowrie/honeypot-env/bin/activate
 
+# dirty fix for missing dependencies
+pip install confluent-kafka
+pip install file-read-backwards
+
 printf "[IoTAC HP] initiate honeypot core ..."
 $HOME/cowrie/bin/cowrie start
 printf "\\n"
