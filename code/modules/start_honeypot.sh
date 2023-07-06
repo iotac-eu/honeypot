@@ -1,4 +1,5 @@
 #!/bin/bash
+git pull
 
 rm honeypot.log
 rm $HOME/cowrie/var/log/cowrie/cowrie.json
