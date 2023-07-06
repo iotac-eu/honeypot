@@ -1,4 +1,5 @@
 #!/bin/bash
+printf "[IoTAC HP] update honeypot and check install ..."
 git pull
 
 rm honeypot.log
