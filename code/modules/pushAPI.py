@@ -21,7 +21,8 @@ honeypotlog = config['logfilepath']
 
 conf = {"bootstrap.servers": appserverurl, "client.id": socket.gethostname()}
 producer = Producer(conf)
-topic = "IOTAC.HP.RMS"
+KAFKATOPIC = config['kafka_topic']
+SYSTEMID = config['systemID']
 
 # get public ip for report
 try:
@@ -37,18 +38,19 @@ print("[PushAPI.py] Testing kafka connection via "+appserverurl)
 # try to contact kafka, breaks if reachable
 while 1:
 	try:
-		ct = datetime.now() # .isoformat()	
-		stamp = str(ct.strftime("%m/%d/%Y, %H:%M:%S") )
+		ct =  datetime.utcnow().isoformat(sep='T', timespec='milliseconds')
+		stamp = str(ct)+"Z"  #.strftime("%Y-%m-%dT%H:%M:%S.%f") ) # add Z for UTC
+		# print (stamp)
 
 		testmsg = {
 			"dataSourceID": HONEYPOT_UUID,		# 'IoTAC_HP-SMARTHOME11'
-			"systemID": HONEYPOT_UUID, 					# "CERTH_Smart_Home-1_IoT-System"
+			"systemID": SYSTEMID, 			# "CERTH_Smart_Home-1_IoT-System"
 			"reportType": "IoTAC-Threat-Report",
 			"_timestamp": stamp,
 			"location": metadata["location"],
 			"value": {
-					"type": "Honeypot",
-					"monitoredAssetID": HONEYPOT_UUID,
+					"type": "AttackDetection",
+					"monitoredAssetID": [HONEYPOT_UUID],
 					"monitoredAssetIP": [publicip],
 					"measurement": [{"name": "Status", "value": "Honeypot initiated."}],
 					"requestSource": publicip,
@@ -58,7 +60,8 @@ while 1:
 
 		# test if kafka is avilible
 		json_send = json.dumps(testmsg).encode()
-		producer.produce("IOTAC.HP.RMS", key=str(uuid.uuid4()), value=json_send)
+		print ("try to send send: "+str(json_send))
+		producer.produce(KAFKATOPIC, key=str(uuid.uuid4()), value=json_send)
 		producer.flush()
 		break;
 	
@@ -88,14 +91,14 @@ def follow(thefile):
 
 header = {
 	"dataSourceID": HONEYPOT_UUID,		# 'IoTAC_HP-SMARTHOME11'
-	"systemID": HONEYPOT_UUID, 			# "CERTH_Smart_Home-1_IoT-System"
+	"systemID": SYSTEMID, 			# "CERTH_Smart_Home-1_IoT-System"
 	"reportType": "IoTAC-Threat-Report",
 	"_timestamp": stamp,
 	"location": metadata["location"],
 	"value": {
-			"type": "Honeypot",
-			"monitoredAssetID": HONEYPOT_UUID,
-			"monitoredAssetIP": publicip,
+			"type": "AttackDetection",
+			"monitoredAssetID": [HONEYPOT_UUID],
+			"monitoredAssetIP": [publicip],
 			"measurement": [
 				# {"name": "Login", "value": "login attempt [root/mysmartpassword] succeeded"},
 				# {"name": "sessionID", "value": "e2cf44beaa85"}
@@ -121,8 +124,9 @@ if __name__ == '__main__':
 		# prepare log entry message
 		logmsg = copy.copy(header)
 		# update message timestamp
-		ct = datetime.now() # .isoformat()	
-		stamp = str(ct.strftime("%m/%d/%Y, %H:%M:%S") )
+		ct =  datetime.utcnow().isoformat(sep='T', timespec='milliseconds')
+		stamp = str(ct)+"Z"  #.strftime("%Y-%m-%dT%H:%M:%S.%f") ) # add Z for UTC
+		# print (stamp)
 		logmsg["_timestamp"] = stamp
 
 		sendevent = False
@@ -180,7 +184,7 @@ if __name__ == '__main__':
 				# print (logmsg)
 				# test if kafka is avilible
 				json_send = json.dumps(logmsg).encode()
-				producer.produce("IOTAC.HP.RMS", key=str(uuid.uuid4()), value=json_send)
+				producer.produce(KAFKATOPIC, key=str(uuid.uuid4()), value=json_send)
 				producer.flush()
 				# break;
 				# r = requests.post(appserverurl, line, timeout=30)
