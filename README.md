@@ -13,9 +13,9 @@ sudo docker exec -it iotac_honeypot /bin/bash
 # running the honeypot
 su honeypot \
 cd $HOME/honeypot/code/modules/ \
-git pull
+git pull \
 **set kafka_topic and systemID in config.json**\
-nano $HOME/honeypot/code/modules/config.json
+nano $HOME/honeypot/code/modules/config.json \
 bash start_honeypot.sh 
 
 ## observe the log
