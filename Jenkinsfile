@@ -62,6 +62,7 @@ pipeline {
                     def dockerImage = docker.image('jlnftk/honeypot:latest')
                    // def dockerImage = docker.build(ARTIFACTORY_DOCKER_REGISTRY + DOCKER_IMAGE_TAG)
                 }
+                sh 'docker pull jlnftk/honeypot:latest'
                 sh 'docker image tag jlnftk/honeypot:latest $ARTIFACTORY_DOCKER_REGISTRY$DOCKER_IMAGE_TAG'
                 // sh 'docker build -t "$ARTIFACTORY_DOCKER_REGISTRY$DOCKER_IMAGE_TAG" .' //
             }
