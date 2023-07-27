@@ -24,9 +24,9 @@ pipeline {
       // SWVA_LANGUAGE = "Python"
       // SWVA_USERNAME = "julieeen"
 
-      // ZAP_USER = "dev-server"
-      // ZAP_ADDRESS = "116.202.190.143"     
-      // ZAP_PROJECT_ID = "36865967"
+      ZAP_USER = "dev-server"
+      ZAP_ADDRESS = "116.202.190.143"     
+      ZAP_PROJECT_ID = "36865967"
     }
 
     stages {
@@ -130,12 +130,7 @@ pipeline {
 
                     echo 'Deploy image to VM'
                     sh 'docker run -d --label io.portainer.accesscontrol.teams=iotacdevs -p 2000-3000:22 --name "$APP_NAME" "$ARTIFACTORY_DOCKER_REGISTRY$DOCKER_IMAGE_TAG"'
-                    sh 'docker exec -it "$APP_NAME" /bin/bash'
-                    sh 'su honeypot'
-                    sh 'cd $HOME/honeypot/code/modules/'
-                    sh 'git pull'
-                    sh 'bash start_honeypot.sh'
-                    sh 'exit'
+                    sh 'docker exec "$APP_NAME" bash -c "su honeypot ; cd $HOME/honeypot/code/modules/ ; git pull ; bash start_honeypot.sh" '
                     echo 'Logout from Registry'
                     sh 'docker logout $ARTIFACTORY_SERVER'
                 }
