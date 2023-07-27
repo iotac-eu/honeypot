@@ -11,7 +11,7 @@ pipeline {
       ARTIFACTORY_SERVER = "https://registry.iotac.rid-intrasoft.eu/artifactory/iotacregistry/"
       ARTIFACTORY_DOCKER_REGISTRY = "registry.iotac.rid-intrasoft.eu/iotacregistry/"
       
-      BRANCH_NAME = "master"
+      BRANCH_NAME = "dast"
       DOCKER_IMAGE_TAG = "$APP_NAME:R${env.BUILD_ID}"
       
       VM_DEV01 = "116.203.5.132:2376"
