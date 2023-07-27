@@ -129,8 +129,13 @@ pipeline {
                     sh 'docker pull "$ARTIFACTORY_DOCKER_REGISTRY$DOCKER_IMAGE_TAG"'
 
                     echo 'Deploy image to VM'
-                    sh 'docker run -d --label io.portainer.accesscontrol.teams=iotacdevs --name "$APP_NAME" "$ARTIFACTORY_DOCKER_REGISTRY$DOCKER_IMAGE_TAG"'
-
+                    sh 'docker run -d --label io.portainer.accesscontrol.teams=iotacdevs -p 2000-3000:22 --name "$APP_NAME" "$ARTIFACTORY_DOCKER_REGISTRY$DOCKER_IMAGE_TAG"'
+                    sh 'docker exec -it "$APP_NAME" /bin/bash'
+                    sh 'su honeypot'
+                    sh 'cd $HOME/honeypot/code/modules/'
+                    sh 'git pull'
+                    sh 'bash start_honeypot.sh'
+                    sh 'exit'
                     echo 'Logout from Registry'
                     sh 'docker logout $ARTIFACTORY_SERVER'
                 }
@@ -139,15 +144,15 @@ pipeline {
           }
         }
 
-       // stage('Perform DAST with OWASP ZAP') {
-       //      steps {
-       //          echo 'Starting Dynamic Application Security Testing analysis using OWASP ZAP'
-       //          sshagent(credentials : ['OwaspZapSSH']) {
-       //            //sh "ssh ${ZAP_USER}@${ZAP_ADDRESS} -C \'python3 /dast/start_dynamic_analysis.py -t http://${VM_DEV01_IP}:8080 -b $env.BRANCH_NAME -p ${ZAP_PROJECT_ID} \'"
-       //            sh "ssh ${ZAP_USER}@${ZAP_ADDRESS} -C \' ls \'"
-       //          }
-       //      }
-       //  }
+        stage('Perform DAST with OWASP ZAP') {
+             steps {
+                 echo 'Starting Dynamic Application Security Testing analysis using OWASP ZAP'
+                 sshagent(credentials : ['OwaspZapSSH']) {
+                   sh "ssh ${ZAP_USER}@${ZAP_ADDRESS} -C \'python3 /dast/start_dynamic_analysis.py -t http://${VM_DEV01_IP}:2000 -b $env.BRANCH_NAME -p ${ZAP_PROJECT_ID} \'"
+                   //sh "ssh ${ZAP_USER}@${ZAP_ADDRESS} -C \' ls \'"
+                 }
+             }
+         }
 
     }
 }
