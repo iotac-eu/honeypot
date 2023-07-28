@@ -129,7 +129,7 @@ pipeline {
                     sh 'docker pull "$ARTIFACTORY_DOCKER_REGISTRY$DOCKER_IMAGE_TAG"'
 
                     echo 'Deploy image to VM'
-                    sh 'docker run -d ----restart unless-stopped --label io.portainer.accesscontrol.teams=iotacdevs -p 2000-3000:22 --name "$APP_NAME" "$ARTIFACTORY_DOCKER_REGISTRY$DOCKER_IMAGE_TAG"'
+                    sh 'docker run -d --restart unless-stopped --label io.portainer.accesscontrol.teams=iotacdevs -p 2000-3000:22 --name "$APP_NAME" "$ARTIFACTORY_DOCKER_REGISTRY$DOCKER_IMAGE_TAG"'
                     echo 'Logout from Registry'
                     sh 'docker logout $ARTIFACTORY_SERVER'
                 }
