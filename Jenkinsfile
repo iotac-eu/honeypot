@@ -6,7 +6,7 @@ pipeline {
     }
 
     environment {
-      APP_NAME = "honeypot"
+      APP_NAME = "honeypot2"
       
       ARTIFACTORY_SERVER = "https://registry.iotac.rid-intrasoft.eu/artifactory/iotacregistry/"
       ARTIFACTORY_DOCKER_REGISTRY = "registry.iotac.rid-intrasoft.eu/iotacregistry/"
