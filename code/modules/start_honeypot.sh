@@ -3,6 +3,7 @@ printf "[IoTAC HP] update honeypot and check install ..."
 git pull
 
 rm honeypot.log
+touch honeypot.log
 rm $HOME/cowrie/var/log/cowrie/cowrie.json
 touch $HOME/cowrie/var/log/cowrie/cowrie.json
 
@@ -47,6 +48,7 @@ printf "\\n"
 reset
 echo "[IoTAC HP] Honeypot initiated."
 echo "tail -f $HOME/cowrie/var/log/cowrie/cowrie.json"
+sleep 1
 tail -f $HOME/cowrie/var/log/cowrie/cowrie.json
 # tail has some issues to follow the file since its async written
 
