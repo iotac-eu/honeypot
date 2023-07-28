@@ -3,5 +3,5 @@ FROM jlnftk/honeypot:latest
 WORKDIR honeypot
 COPY code code
 
-RUN cd code/modules/ 
-CMD bash start_honeypot.sh
+USER honeypot
+CMD cd code/modules/ ; bash start_honeypot.sh
