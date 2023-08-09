@@ -1,4 +1,4 @@
 FROM jlnftk/honeypot:latest 
 USER honeypot
-COPY code code
-CMD cd $HOME/code/modules ; bash start_honeypot.sh
+COPY code $HOME/honeypot/code
+CMD cd $HOME/honeypot/code/modules ; bash start_honeypot.sh
