@@ -48,7 +48,7 @@ printf "\\n"
 reset
 echo "[IoTAC HP] Honeypot initiated."
 echo "tail -f $HOME/cowrie/var/log/cowrie/cowrie.json"
-sleep 1
-tail -f $HOME/cowrie/var/log/cowrie/cowrie.json
+echo "..."
+tail -f /home/honeypot/cowrie/var/log/cowrie/cowrie.log
 # tail has some issues to follow the file since its async written
 
